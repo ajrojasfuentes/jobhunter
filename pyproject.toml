@@ -1,0 +1,72 @@
+[project]
+name = "jobhunter"
+version = "0.1.0"
+description = "A modular FastAPI starter with a system health endpoint."
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+authors = [
+    { name = "ajrojasfuentes", email = "ajrojasfuentes@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.141.1",
+    "pydantic>=2.13.5,<3",
+    "pydantic-settings>=2.15.0",
+    "sqlmodel>=0.0.46",
+    "uvicorn[standard]>=0.53.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.0",
+    "import-linter>=2.15",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.8",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.importlinter]
+root_package = "jobhunter"
+
+[[tool.importlinter.contracts]]
+name = "Feature modules are independent"
+type = "independence"
+modules = [
+    "jobhunter.modules.*",
+]
+
+[[tool.importlinter.contracts]]
+name = "Application dependencies flow toward shared core"
+type = "layers"
+containers = ["jobhunter"]
+layers = ["main", "api", "modules", "core"]
+exhaustive = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-config", "--strict-markers", "--import-mode=importlib"]
+
+[tool.coverage.run]
+source = ["jobhunter"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+include_namespace_packages = true
+fail_under = 90
